@@ -13,6 +13,7 @@ export class GameMap extends AcGameObject {
 
     this.controller = new Controller(this.$canvas);
 
+    // 加入血条
     this.root.$kof.append($(`
       <div class="kof-head">
         <div class="kof-head-hp-0"><div><div></div></div></div>
@@ -21,7 +22,8 @@ export class GameMap extends AcGameObject {
       </div>
     `));
 
-    this.time_left = 60000;  //单位：毫秒
+    // 加入计时表
+    this.time_left = 60000;  //单位：毫秒（因为定义的timedelta单位是ms）
     this.$timer = this.root.$kof.find('.kof-head-timer');
   }
 
@@ -30,8 +32,14 @@ export class GameMap extends AcGameObject {
   }
 
   update() {
+    this.update_time();
+
+    this.render();
+  }
+
+  update_time() {
     this.time_left -= this.timedelta;
-    if (this.time_left < 0) {
+    if (this.time_left < 0) {   // 时间到，游戏结束
       this.time_left = 0;
 
       let [a, b] = this.root.players;
@@ -43,8 +51,6 @@ export class GameMap extends AcGameObject {
     }
     
     this.$timer.text(parseInt(this.time_left / 1000));
-
-    this.render();
   }
 
   render() {
