@@ -1,4 +1,4 @@
-import {AcGameObject} from '/static/js/ac_game_object/base.js'
+import {AcGameObject} from '../ac_game_object/base.js'
 import { Controller } from '../controller/base.js';
 
 export class GameMap extends AcGameObject {
@@ -6,10 +6,10 @@ export class GameMap extends AcGameObject {
     super();
 
     this.root = root;
-    this.$canvas = $('<canvas width="1280" height="720" tabindex=0></canvas>');
-    this.ctx = this.$canvas[0].getContext('2d');
+    this.$canvas = $('<canvas width="1280" height="720" tabindex=0></canvas>');   // 构造一个jQuery对象  其中，tabindex="0"使<canvas>元素可以聚焦
+    this.ctx = this.$canvas[0].getContext('2d');  // this.$canvas[0]是<canvas>元素的DOM对象   this.ctx用于画布的渲染
     this.root.$kof.append(this.$canvas);
-    this.$canvas.focus();
+    this.$canvas.focus();   // 聚焦，使之可以获取输入
 
     this.controller = new Controller(this.$canvas);
 

@@ -1,4 +1,4 @@
-import { AcGameObject } from '/static/js/ac_game_object/base.js';
+import { AcGameObject } from '../ac_game_object/base.js';
 
 export class Player extends AcGameObject {
   constructor(root, info) {
@@ -17,16 +17,16 @@ export class Player extends AcGameObject {
     this.vx = 0;
     this.vy = 0;
 
-    this.speedx = 400;  //水平速度
-    this.speedy = -1000;  //跳跃初始速度
+    this.speedx = 400;  // 水平速度
+    this.speedy = -1000;  // 跳跃初始速度
 
     this.gravity = 50;
 
     this.ctx = this.root.game_map.ctx;
     this.pressed_keys = this.root.game_map.controller.pressed_keys;
-    this.status = 3;  //0：静止， 1：向前，2：向后，3：跳跃，4：攻击，5：被攻击，6：死亡
-    this.animations = new Map();
-    this.frame_current_cnt = 0;  //当前记录帧数
+    this.status = 3;  // 0：静止， 1：向前，2：向后，3：跳跃，4：攻击，5：被攻击，6：死亡   随着项目的完善，动作会变的很多，这时用数组存储字符串代替this.status会更方便
+    this.animations = new Map();  // 状态的动作    
+    this.frame_current_cnt = 0;  // 当前记录帧数
 
     this.hp = 100;
     this.$hp = this.root.$kof.find(`.kof-head-hp-${this.id}>div`);
@@ -37,43 +37,43 @@ export class Player extends AcGameObject {
   }
 
   update_control() {
-    let w, a, d, space;
+    let w, a, d, j;
     if (this.id === 0) {
       w = this.pressed_keys.has('w');
       a = this.pressed_keys.has('a');
       d = this.pressed_keys.has('d');
-      space = this.pressed_keys.has(' ');
+      j = this.pressed_keys.has('j');
     } else {
       w = this.pressed_keys.has('ArrowUp');
       a = this.pressed_keys.has('ArrowLeft');
       d = this.pressed_keys.has('ArrowRight');
-      space = this.pressed_keys.has('Enter');
+      j = this.pressed_keys.has('1');
     }
 
-    if (this.status === 0 || this.status === 1) {
-      if (space) {  //攻击
+    if (this.status === 0 || this.status === 1) {   // 静止状态 || 移动状态
+      if (j) {  // 攻击
         this.status = 4;
         this.vx = 0;
         this.frame_current_cnt = 0;
-      } else if (w) {  //跳跃
-        if (d) {  //向右跳
+      } else if (w) {  // 跳跃
+        if (d) {  // 向右跳
           this.vx = this.speedx;
-        } else if (a) {  //向左跳
+        } else if (a) {  // 向左跳
           this.vx = -this.speedx;
-        } else {  //原地跳
+        } else {  // 垂直跳
           this.vx = 0;
         }
         this.vy = this.speedy;
         this.status = 3;
         this.frame_current_cnt = 0;
 
-      } else if (d) {  //向右移动
+      } else if (d) {  // 向右移动
         this.vx = this.speedx;
         this.status = 1;
-      } else if (a) {  //向左移动
-        this.vx = -this.speedx;
+      } else if (a) {  // 向左移动
+        this.vx = - this.speedx;
         this.status = 1;
-      } else {  //静止
+      } else {  // 静止
         this.vx = 0;
       }
     }
@@ -111,17 +111,20 @@ export class Player extends AcGameObject {
       if (this.status === 3) this.status = 0;
     }
 
+    // 落到平地上后静止
     if (this.y > 450) {
       this.y = 450;
       this.vy = 0;
       if (this.status === 3) this.status = 0;
     }
 
+    // 不能超出左右边界
     if (this.x < 0) {
       this.x = 0;
     } else if (this.x + this.width > this.root.game_map.$canvas.width()) {
       this.x = this.root.game_map.$canvas.width() - this.width;
     }
+
   }
 
   update_direction() {
@@ -135,7 +138,7 @@ export class Player extends AcGameObject {
     }
   }
 
-  is_collusion(r1, r2) {  //判断两个矩阵是否有交集
+  is_collusion(r1, r2) {  // 判断两个矩阵是否有交集
     if (Math.max(r1.x1, r2.x1) > Math.min(r1.x2, r2.x2))
       return false;
     if (Math.max(r1.y1, r2.y1) > Math.min(r1.y2,r2.y2))
@@ -169,8 +172,8 @@ export class Player extends AcGameObject {
   update_attack() {
     if (this.status === 4 && this.frame_current_cnt === 18) {
       let me = this, you = this.root.players[1 - this.id];
-      let r1;  //攻击判定矩形
-      let r2;  //敌方人物矩形
+      let r1;  // 攻击判定矩形
+      let r2;  // 敌方人物矩形
       if (this.direction >0) {
         r1 = {
           x1: me.x + 120,
@@ -216,12 +219,12 @@ export class Player extends AcGameObject {
     if (this.status === 1 && this.direction * this.vx < 0) status = 2;
 
     let obj = this.animations.get(status);
-    if (obj && obj.loaded) {
-      if (this.direction > 0) {  //正方向
+    if (obj && obj.loaded) {    // GIF 已经加载完成
+      if (this.direction > 0) {  // 正方向
         let k = parseInt(this.frame_current_cnt / obj.frame_rate) % obj.frame_cnt;
         let image = obj.gif.frames[k].image;
         this.ctx.drawImage(image, this.x, this.y + obj.offset_y, image.width * obj.scale, image.height * obj.scale);
-      } else {  //反方向
+      } else {  // 反方向
         this.ctx.save();
         this.ctx.scale(-1, 1);
         this.ctx.translate(-this.root.game_map.$canvas.width(), 0);
@@ -234,7 +237,7 @@ export class Player extends AcGameObject {
       }
     }
 
-    if (status === 4 || status === 5 || status === 6) {  //确保不会一直循环GIF
+    if (status === 4 || status === 5 || status === 6) {  // 确保不会一直循环GIF
       if (this.frame_current_cnt === obj.frame_rate * (obj.frame_cnt - 1)) {
         if (status === 6) {
           this.frame_current_cnt--;

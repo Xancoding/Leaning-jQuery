@@ -9,13 +9,13 @@ const GIF = function () {
   var pixelBufSize;    // this holds a buffer for pixels. Created on the first frame and when size changed
   var pixelBuf;
   const GIF_FILE = { // gif file data headers
-      GCExt: 0xF9,
-      COMMENT: 0xFE,
-      APPExt: 0xFF,
-      UNKNOWN: 0x01, // not sure what this is but need to skip it in parser
-      IMAGE: 0x2C,
-      EOF: 59,   // This is entered as decimal
-      EXT: 0x21,
+    GCExt: 0xF9,
+    COMMENT: 0xFE,
+    APPExt: 0xFF,
+    UNKNOWN: 0x01, // not sure what this is but need to skip it in parser
+    IMAGE: 0x2C,
+    EOF: 59,   // This is entered as decimal
+    EXT: 0x21,
   };
   // simple buffered stream used to read from the file 
   var Stream = function (data) {

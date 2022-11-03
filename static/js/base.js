@@ -1,7 +1,7 @@
-import { GameMap } from '/static/js/game_map/base.js'
-import { Kyo } from '/static/js/player/kyo.js';
+import { GameMap } from '../js/game_map/base.js'
+import { Kyo } from '../js/player/kyo.js';
 
-class KOF {
+export class KOF {
   constructor(id) {
     this.$kof = $('#' + id);
 
@@ -25,8 +25,4 @@ class KOF {
       })
     ]
   }
-}
-
-export {
-  KOF
 }
