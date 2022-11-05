@@ -3,7 +3,6 @@
 - [AcWing Web 应用课 | 中期项目——拳皇（下） | Vedio](https://www.acwing.com/video/3833/)
 ***
 ## Previews
-![KOF](https://raw.githubusercontent.com/Xancoding/Leaning-jQuery/master/screenshot.png)
 ## 基础操作
 ```
 操作如下：
